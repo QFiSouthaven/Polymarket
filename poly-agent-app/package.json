@@ -1,0 +1,25 @@
+{
+  "name": "poly-agent",
+  "version": "1.0.0",
+  "description": "Autonomous Polymarket Trading Agent - Desktop App",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win"
+  },
+  "build": {
+    "appId": "com.polyagent.trader",
+    "productName": "PolyAgent",
+    "win": {
+      "target": ["nsis"],
+      "icon": null
+    }
+  },
+  "dependencies": {
+    "electron-squirrel-startup": "^1.0.0"
+  },
+  "devDependencies": {
+    "electron": "^32.0.0",
+    "electron-builder": "^25.0.0"
+  }
+}

@@ -1,0 +1,43 @@
+# Poly-Agent — Secrets & sensitive files (do NOT commit)
+*.env
+.env.*
+config.yaml
+config.yml
+*.key
+*.pem
+*.der
+*.pfx
+*.p12
+*.keystore
+secrets.yaml
+secrets.yml
+# Vault files
+*.lock
+# Dev state DB
+*.db
+# Cache
+cache/
+# Local data
+dev_state.db
+# IDE / editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+# OS
+.DS_Store
+Thumbs.db
+# Build output
+__pycache__/
+*.pyc
+node_modules/
+dist/
+build/
+out/
+# MCP cache
+polymarket_cache.json
+mcp_cache.json
+# Documentation scrapes
+Development/polymarket_docs/
+Development/scrape_reference.py

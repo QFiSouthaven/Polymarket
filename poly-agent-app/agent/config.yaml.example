@@ -1,0 +1,29 @@
+# PolyAgent Configuration — EXTRACT FROM vault, NEVER commit this file
+# Edit these placeholders or use the in-app Settings panel
+
+auth:
+  client_id: "REDACTED"
+  audience: "REDACTED"
+  private_key_path: "REDACTED"  # RSA key from onboarding@polymarket.us
+
+trading:
+  daily_budget_usd: 50
+  per_trade_max_usd: 20
+  daily_loss_limit_usd: 50
+  stop_loss_pct: 20
+  take_profit_pct: 15
+
+strategies:
+  arbitrage: false     # Find mispriced bundles (near-risk-free)
+  edge_detection: false # Compare PolyMarket price vs external data
+  momentum: false      # Trend following
+  market_making: false # Spread capture
+
+environments:
+  retail_api_base: "https://api.prod.polymarketexchange.com"
+  preprod_api_base: "https://api.preprod.polymarketexchange.com"
+
+agent:
+  scan_interval_seconds: 30
+  max_concurrent_trades: 5
+  auto_cashout: true

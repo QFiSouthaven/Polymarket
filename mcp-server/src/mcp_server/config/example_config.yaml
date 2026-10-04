@@ -1,0 +1,32 @@
+# PolyAgent MCP Server Configuration
+# This file is referenced by the server to locate poly-agent config.
+# The actual auth/config comes from F:/PolyMarket/poly-agent/config.yaml
+
+server:
+  name: "polyagent-mcp-server"
+  version: "0.1.0"
+  
+  # Path to the PolyAgent workspace (used for resolving relative paths)
+  workspace_root: "F:/PolyMarket/"
+  
+  # Database path for dev state persistence
+  dev_state_db: "dev_state.db"
+  
+  # Cache directory for Polymarket data
+  cache_dir: "cache/"
+
+# Polymarket environment (preprod | prod)
+polymarket:
+  environment: "preprod"
+  base_url: "https://api.preprod.polymarketexchange.com"
+  gateway_url: "https://gateway.preprod.polymarketexchange.com"
+
+# Cache TTL settings (seconds)
+cache_ttl:
+  market_detail: 300      # 5 min
+  order_book: 60          # 1 min
+  price: 30               # 30 seconds
+  positions: 120          # 2 min
+  portfolio: 60           # 1 min
+  activities: 300         # 5 min
+  events: 600             # 10 min

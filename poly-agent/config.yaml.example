@@ -1,0 +1,74 @@
+# POLYAGENT — Autonomous Polymarket Exchange Trading Agent
+# Fill auth from vault. strategy enabled=false until ready.
+
+agent:
+  enabled: false                    # FLIP THIS TO START THE AGENT
+  name: "PolyAgent Alpha"
+  log_level: "INFO"
+  max_iterations_per_cycle: 50
+  cycle_interval_seconds: 30
+
+# AUTHENTICATION — Polymarket Exchange (polymarket.us)
+auth:
+  environment: "preprod"            # preprod | prod (start with preprod!)
+  client_id: "REDACTED"
+  audience: "REDACTED"
+  secret_key: "REDACTED"
+  token_refresh_seconds: 150
+
+# CAPITAL MANAGEMENT
+capital:
+  total_budget_usdc: 1000
+  max_per_trade_usdc: 50
+  max_open_positions: 20
+  daily_loss_limit_usdc: 100
+  profit_target_daily_usdc: 50
+  min_profit_cashout_pct: 0.05
+
+# STRATEGIES (each can be toggled independently)
+strategies:
+  bundle_arbitrage:
+    enabled: false
+    min_edge_pct: 0.02
+    max_position_usdc: 30
+  edge_detection:
+    enabled: false
+    min_edge_pct: 0.05
+    lookback_hours: 24
+    external_data_sources:
+      - "news_sentiment"
+      - "historical_accuracy"
+  momentum:
+    enabled: false
+    min_volume_24h: 1000
+    trend_window_hours: 6
+    max_position_usdc: 25
+  market_making:
+    enabled: false
+    min_spread_pct: 0.03
+    order_size_usdc: 10
+    max_active_orders: 50
+
+# RISK MANAGEMENT (HARD LIMITS)
+risk:
+  stop_loss_pct: -0.20
+  take_profit_pct: 0.15
+  max_correlation_exposure: 0.4
+  kill_switch:
+    enabled: true
+    consecutive_losses: 5
+    drawdown_pct: -0.15
+
+# MONITORING
+monitoring:
+  dashboard_port: 8080
+  alert_on_trade: true
+  alert_on_cashout: true
+  alert_on_stop_loss: true
+  export_csv: "trades_log.csv"
+
+# RATE LIMITS
+rate_limits:
+  rest_requests_per_minute: 60
+  grpc_streams_max: 20
+  ingress_messages_per_second: 100

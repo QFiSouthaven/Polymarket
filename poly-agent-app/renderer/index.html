@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PolyAgent - Autonomous Polymarket Trading</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Main Layout -->
+  <div class="app-container">
+    
+    <!-- Left Sidebar: View Categories -->
+    <aside class="sidebar">
+      <div class="sidebar-header">View</div>
+      <nav class="category-list">
+        <button class="cat-btn active" data-cat="sports">Sports</button>
+        <button class="cat-btn" data-cat="politics">Politics</button>
+        <button class="cat-btn" data-cat="crypto">Crypto</button>
+        <button class="cat-btn" data-cat="weather">Weather</button>
+        <button class="cat-btn" data-cat="tech">Tech</button>
+        <button class="cat-btn" data-cat="cultural">Cultural</button>
+        <button class="cat-btn" data-cat="econ">Econ</button>
+      </nav>
+      
+      <!-- Settings Panel (toggled) -->
+      <div class="settings-panel" id="settingsPanel">
+        <h3>Harness Settings</h3>
+        
+        <div class="setting-group">
+          <label>LM Studio Endpoint</label>
+          <input type="text" id="lmEndpoint" value="http://localhost:1234" placeholder="http://localhost:1234">
+        </div>
+        
+        <div class="setting-group">
+          <label>Daily Budget ($)</label>
+          <input type="range" id="dailyBudget" min="10" max="500" value="50">
+          <span class="budget-value">$<span id="budgetDisplay">50</span>/day</span>
+        </div>
+        
+        <div class="setting-group">
+          <label>Per-Trade Max ($)</label>
+          <input type="range" id="perTradeMax" min="1" max="100" value="20">
+          <span class="budget-value">$<span id="tradeMaxDisplay">20</span></span>
+        </div>
+        
+        <div class="setting-group">
+          <label>Daily Loss Limit ($)</label>
+          <input type="range" id="lossLimit" min="10" max="200" value="50">
+          <span class="budget-value">$<span id="lossDisplay">50</span></span>
+        </div>
+        
+        <div class="setting-group">
+          <label>Stop Loss (%)</label>
+          <input type="range" id="stopLoss" min="10" max="50" value="20">
+          <span class="budget-value"><span id="stopDisplay">20</span>%</span>
+        </div>
+        
+        <div class="setting-group">
+          <label>Take Profit (%)</label>
+          <input type="range" id="takeProfit" min="5" max="100" value="15">
+          <span class="budget-value"><span id="profitDisplay">15</span>%</span>
+        </div>
+        
+        <h3>Strategies</h3>
+        <label class="toggle-label">
+          <input type="checkbox" id="arbToggle" checked> Arbitrage
+        </label>
+        <label class="toggle-label">
+          <input type="checkbox" id="edgeToggle" checked> Edge Detection
+        </label>
+        <label class="toggle-label">
+          <input type="checkbox" id="momentumToggle"> Momentum
+        </label>
+        <label class="toggle-label">
+          <input type="checkbox" id="mmToggle"> Market Making
+        </label>
+        
+        <div class="setting-group">
+          <label>Polymarket Auth</label>
+          <input type="text" id="pmClientID" placeholder="Client ID (from onboarding@polymarket.us)">
+          <input type="password" id="pmAudience" placeholder="Audience URL">
+        </div>
+        
+        <button class="btn-save" onclick="saveSettings()">Save Settings</button>
+      </div>
+      
+      <!-- Endpoint Config -->
+      <div class="endpoint-panel">
+        <h3>Endpoint</h3>
+        <input type="text" id="apiEndpoint" value="https://api.prod.polymarketexchange.com" placeholder="API endpoint URL">
+        <button class="btn-connect" onclick="connectToAgent()">Connect</button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      
+      <!-- Fuse Panel Tab (new!) -->
+      <div class="fuse-panel" id="fusePanel">
+        <div class="fuse-header">
+          <span>🔧 Fuse Panel & Heartbeat</span>
+          <button class="btn-small btn-auto" onclick="refreshFusePanel()">↻ Refresh</button>
+        </div>
+        
+        <!-- Health Status Cards -->
+        <div class="health-cards">
+          <div class="health-card healthy" id="cardSystemHealth">
+            <div class="card-icon">✅</div>
+            <div class="card-label">System Health</div>
+            <div class="card-value" id="systemHealthValue">Healthy</div>
+          </div>
+          <div class="health-card" id="cardErrors">
+            <div class="card-icon">📋</div>
+            <div class="card-label">Errors (1h)</div>
+            <div class="card-value" id="errorsValue">0</div>
+          </div>
+          <div class="health-card" id="cardRetries">
+            <div class="card-icon">🔄</div>
+            <div class="card-label">Retry Queue</div>
+            <div class="card-value" id="retriesValue">0</div>
+          </div>
+          <div class="health-card" id="cardHeartbeat">
+            <div class="card-icon">❤️</div>
+            <div class="card-label">Heartbeat Checks</div>
+            <div class="card-value" id="heartbeatValue">0</div>
+          </div>
+        </div>
+
+        <!-- Blown Fuses Alert -->
+        <div class="blown-fuses-alert" id="blownFusesAlert" style="display:none">
+          ⚡ BLOWN FUSES: <span id="blownFuseNames"></span> — Agent paused until cooldown expires.
+        </div>
+
+        <!-- Tabs within Fuse Panel -->
+        <div class="fuse-tabs">
+          <button class="ftab active" data-tab="errors">📋 Error Log</button>
+          <button class="ftab" data-tab="retries">🔄 Retry Queue</button>
+          <button class="ftab" data-tab="tasks">📌 Message Board / To-Do</button>
+          <button class="ftab" data-tab="scheduled">⏰ Scheduled Tasks</button>
+        </div>
+
+        <!-- Error Log View -->
+        <div class="fuse-content visible" id="errorsView">
+          <table class="error-table">
+            <thead><tr><th>Time</th><th>Severity</th><th>Source</th><th>Message</th></tr></thead>
+            <tbody id="errorLogBody"></tbody>
+          </table>
+        </div>
+
+        <!-- Retry Queue View -->
+        <div class="fuse-content" id="retriesView">
+          <div id="retryQueueList"></div>
+        </div>
+
+        <!-- Message Board / To-Do View -->
+        <div class="fuse-content" id="tasksView">
+          <div class="task-input-area">
+            <input type="text" id="newTaskInput" placeholder='Add task: e.g. "scan MLB for arb"'>
+            <select id="taskPriority"><option value="1">🔴 Critical</option><option value="3">🟠 High</option><option value="5" selected>🟡 Medium</option><option value="7">🟢 Low</option></select>
+            <button class="btn-small btn-auto" onclick="addTaskFromBoard()">+ Add</button>
+          </div>
+          <div id="taskList"></div>
+        </div>
+
+        <!-- Scheduled Tasks View -->
+        <div class="fuse-content" id="scheduledView">
+          <table class="error-table">
+            <thead><tr><th>Task</th><th>Interval</th><th>Last Run (s ago)</th><th>Action</th></tr></thead>
+            <tbody id="scheduledList"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Category Tabs (MLB, Tennis, NFL...) -->
+      <div class="category-tabs" id="sportTabs">
+        <button class="tab-btn active" data-sport="mlb">MLB</button>
+        <button class="tab-btn" data-sport="tennis">Tennis</button>
+        <button class="tab-btn" data-sport="nfl">NFL</button>
+        <button class="tab-btn" data-sport="nba">NBA</button>
+        <button class="tab-btn" data-sport="nhl">NHL</button>
+        <button class="tab-btn" data-sport="ufc">UFC</button>
+        <button class="tab-btn" data-sport="soccer">Soccer</button>
+      </div>
+
+      <!-- Teams / Markets List -->
+      <div class="teams-panel" id="teamsPanel">
+        <div class="panel-header">
+          <span>Teams / Markets</span>
+          <div class="panel-actions">
+            <button class="btn-small" onclick="scanMarkets()">🔍 Scan</button>
+            <button class="btn-small btn-auto" onclick="autoTradeAll()">⚡ AUTO ALL</button>
+          </div>
+        </div>
+        
+        <!-- Team rows (populated by JS) -->
+        <div id="teamsList"></div>
+      </div>
+
+      <!-- Right Panel: Current / History -->
+      <aside class="right-panel">
+        <div class="panel-tabs">
+          <button class="ptab active" data-tab="current">Current</button>
+          <button class="ptab" data-tab="history">History</button>
+        </div>
+        
+        <div id="positionsPanel" class="panel-content">
+          <!-- Positions populated by JS -->
+          <p class="empty-state">No active positions. Scan markets to find opportunities.</p>
+        </div>
+      </aside>
+
+    </main>
+
+    <!-- Chat Panel (bottom) -->
+    <section class="chat-panel" id="chatPanel">
+      <div class="chat-header">
+        <span>🤖 Agent Chat</span>
+        <div class="agent-status" id="agentStatus">
+          <span class="status-dot offline"></span> Agent: Offline
+        </div>
+      </div>
+      
+      <div class="chat-messages" id="chatMessages">
+        <!-- Messages populated by JS -->
+        <div class="message bot-message">
+          <div class="msg-avatar">🤖</div>
+          <div class="msg-content">
+            <p>Welcome to PolyAgent! I'm your autonomous trading assistant.</p>
+            <p><strong>Try these commands:</strong></p>
+            <ul>
+              <li>"scan MLB for arb opportunities"</li>
+              <li>"set budget $50/day"</li>
+              <li>"enable auto-trade on tennis"</li>
+              <li>"show my positions"</li>
+              <li>"stop" (to pause me)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <div class="chat-input-area">
+        <input type="text" id="chatInput" placeholder='Type a command... e.g. "scan NFL"' onkeydown="handleChatKey(event)">
+        <button class="btn-send" onclick="sendMessage()">Send</button>
+        <button class="btn-stop" onclick="stopAgentUI()" title="Stop agent">⏹ Stop</button>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Sign In Modal -->
+  <div class="modal-overlay" id="authModal">
+    <div class="modal auth-modal">
+      <h2>PolyAgent Setup</h2>
+      
+      <div class="auth-tabs">
+        <button class="auth-tab active" onclick="showAuthTab('signin')">Sign In</button>
+        <button class="auth-tab" onclick="showAuthTab('signup')">New User</button>
+      </div>
+      
+      <!-- Sign In Form -->
+      <form id="signinForm" onsubmit="handleSignIn(event)">
+        <label>User Name:</label>
+        <input type="text" id="signInUser" placeholder="Enter username">
+        
+        <label>Password:</label>
+        <input type="password" id="signInPass" placeholder="Enter password">
+        
+        <button type="submit" class="btn-auth btn-signin">SIGN IN</button>
+        <a href="#" class="forgot-link">Forgot Password?</a>
+      </form>
+      
+      <!-- Sign Up Form -->
+      <form id="signupForm" style="display:none" onsubmit="handleSignUp(event)">
+        <label>Email:</label>
+        <input type="email" id="signUpEmail" placeholder="your@email.com">
+        
+        <label>Password:</label>
+        <input type="password" id="signUpPass" placeholder="Create password">
+        
+        <button type="submit" class="btn-auth btn-signup">SIGN UP</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
