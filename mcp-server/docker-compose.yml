@@ -1,0 +1,38 @@
+version: "3.9"
+
+# PolyAgent MCP Server
+# Run inside Docker Desktop on Falki's Windows 11 machine.
+# The MCP server reads/writes dev_state.db for persistence.
+
+services:
+  mcp-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: polyagent-mcp-server
+    container_name: polyagent-mcp-server
+    restart: unless-stopped
+    ports:
+      # MCP server listens on its own port — expose it for local testing
+      "8080:8080"
+    volumes:
+      # Persistent SQLite dev-state database
+      - dev_state:/app/dev_state
+      # Config override (optional — mounts host config.yaml into container)
+      - ./config.yaml:/app/mcp-server/config.yaml:ro
+      # Source code for hot-reload during development
+      - ./src:/app/mcp-server/src:ro
+    environment:
+      MCP_SERVER_CONFIG: /app/mcp-server/config.yaml
+      PYTHONPATH: /app/mcp-server/src
+      LOG_LEVEL: info
+    networks:
+      - polyagent-net
+
+volumes:
+  dev_state:
+    name: polyagent-mcp-dev_state
+
+networks:
+  polyagent-net:
+    driver: bridge
