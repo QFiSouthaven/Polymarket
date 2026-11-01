@@ -20,6 +20,13 @@
 *.css   text eol=lf
 *.sql   text eol=lf
 
+# Docker/build files and config formats that Linux tooling reads: always LF.
+Dockerfile      text eol=lf
+.dockerignore   text eol=lf
+*.ini           text eol=lf
+*.cfg           text eol=lf
+*.xml           text eol=lf
+
 # Repo metadata and templates: LF as well, so autocrlf stops warning on every touch.
 .gitignore      text eol=lf
 .gitattributes  text eol=lf
