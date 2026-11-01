@@ -148,8 +148,8 @@ class DashboardServer:
 </div>
 
 <script>
-async function fetchState() {
-  try {
+async function fetchState() {{
+  try {{
     const res = await fetch('/state');
     const data = await res.json();
     document.getElementById('pnl').textContent = '$' + (data.pnl || 0).toFixed(2);
@@ -161,15 +161,15 @@ async function fetchState() {
     document.getElementById('status').className = 'status ' + (data.status==='running'?'status-running':'status-idle');
     document.getElementById('status').textContent = '● ' + (data.status||'IDLE').toUpperCase();
     document.getElementById('last-update').textContent = data.last_update ? 'Updated: '+data.last_update : '';
-  } catch(e) {}
-}
+  }} catch(e) {{}}
+}}
 
-async function stopAgent() {
-  if(confirm('Stop the agent? All open positions will be closed.')) {
-    await fetch('/stop', {method:'POST'});
+async function stopAgent() {{
+  if(confirm('Stop the agent? All open positions will be closed.')) {{
+    await fetch('/stop', {{method:'POST'}});
     alert('Agent stopping...');
-  }
-}
+  }}
+}}
 
 fetchState();
 setInterval(fetchState, 5000);
