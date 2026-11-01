@@ -1,4 +1,4 @@
-"""PolyAgent MCP Server — Persistent Memory for Dev Lifecycle & Polymarket App."""
+"""PolyAgent MCP Server - Persistent Memory for Dev Lifecycle and Polymarket App."""
 
 # Only import the server when explicitly requested (avoids mcp dependency for basic imports)
 def get_mcp():
