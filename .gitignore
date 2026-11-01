@@ -1,6 +1,9 @@
 # Poly-Agent — Secrets & sensitive files (do NOT commit)
 *.env
 .env.*
+# ...but the templates ARE tracked, so a fresh clone knows what to fill in.
+!/.env.example
+!**/config.yaml.example
 config.yaml
 config.yml
 *.key
@@ -41,3 +44,32 @@ mcp_cache.json
 # Documentation scrapes
 Development/polymarket_docs/
 Development/scrape_reference.py
+# Hermes local state
+.hermes/
+
+# ── Git worktrees (parallel development checkouts live here) ────────────────
+# Created with:  git worktree add .worktrees/<name> -b <branch>
+.worktrees/
+
+# ── Archived / superseded experiments (kept on disk, out of the mainline) ───
+/player -clean-/
+/archive/
+
+# ── Python environments & tooling caches ────────────────────────────────────
+.venv/
+venv/
+env/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# ── Runtime artifacts (never commit live state or logs) ─────────────────────
+*.log
+logs/
+runs/
+*.sqlite
+*.sqlite3
