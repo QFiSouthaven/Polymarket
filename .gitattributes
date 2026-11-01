@@ -1,0 +1,43 @@
+# Line-ending policy — this repo is developed on Windows but must stay diff-clean.
+# The index always stores LF; the working tree is pinned per file type so that
+# core.autocrlf (set to "true" in the system gitconfig) can never rewrite sources.
+
+* text=auto
+
+# Source and config: LF everywhere, including the working tree.
+*.py    text eol=lf
+*.pyi   text eol=lf
+*.js    text eol=lf
+*.mjs   text eol=lf
+*.ts    text eol=lf
+*.json  text eol=lf
+*.yaml  text eol=lf
+*.yml   text eol=lf
+*.toml  text eol=lf
+*.md    text eol=lf
+*.txt   text eol=lf
+*.html  text eol=lf
+*.css   text eol=lf
+*.sql   text eol=lf
+
+# Windows launcher scripts must keep CRLF or cmd.exe mis-parses them.
+*.bat   text eol=crlf
+*.cmd   text eol=crlf
+*.ps1   text eol=crlf
+
+# Binaries — never rewrite, never diff.
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.pdf   binary
+*.zip   binary
+*.db    binary
+*.sqlite binary
+*.exe   binary
+*.dll   binary
+
+# Generated / scraped reference material: collapse in diffs and language stats.
+Development/polymarket_docs/**  text eol=lf linguist-generated
+Development/polymarket_llm_reference.md text eol=lf linguist-generated
