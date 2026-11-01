@@ -6,6 +6,9 @@
 !**/config.yaml.example
 config.yaml
 config.yml
+# ...except GitHub's own config files, which are UI configuration, not secrets.
+!.github/**/config.yml
+!.github/**/config.yaml
 *.key
 *.pem
 *.der

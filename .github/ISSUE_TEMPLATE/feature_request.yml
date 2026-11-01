@@ -1,0 +1,57 @@
+name: Feature or research task
+description: New capability, strategy, data source or build step
+title: "[feat] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: What this buys the build
+      description: One sentence. If it does not move a ROADMAP blocker or a BUILD-PLAN phase, say so explicitly.
+    validations:
+      required: true
+  - type: dropdown
+    id: phase
+    attributes:
+      label: Which BUILD-PLAN phase does this belong to?
+      options:
+        - "Phase 0 — blueprint & verification"
+        - "Phase 1 — first profitable trade (preprod)"
+        - "Phase 2 — edge detection strategy"
+        - "Phase 3 — momentum strategy"
+        - "Phase 4 — production readiness"
+        - "Not in the plan yet (justify below)"
+    validations:
+      required: true
+  - type: textarea
+    id: anchor
+    attributes:
+      label: Anchor references
+      value: |
+        → ENDGAME.md §
+        → BUILD-PLAN.md Phase
+        → ROADMAP.md blocker B-
+    validations:
+      required: true
+  - type: textarea
+    id: data-source
+    attributes:
+      label: Where does the signal come from? (strategies only)
+      description: >
+        AGENT-AGENDA §III pillar 1 — if a real external source is not available, the strategy must emit
+        no signal at all. No random fallbacks, no keyword counting. Name the endpoint and its auth layer,
+        and note that API-ROUTING.md must be updated before the first call.
+  - type: textarea
+    id: risk-path
+    attributes:
+      label: How does it pass through risk_manager.approve()? (strategies only)
+      description: ENDGAME §7 rule 2 — no strategy may be added without a risk-manager code path. A bypass is a security bug.
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria that must not regress
+      description: >
+        AGENT-AGENDA §III pillar 3 — name the tests/metrics this change must keep passing (latency budget,
+        false-positive rate, drawdown), not just the new ones it satisfies.
+    validations:
+      required: true

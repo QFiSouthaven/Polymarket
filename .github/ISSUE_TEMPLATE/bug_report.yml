@@ -1,0 +1,56 @@
+name: Bug report
+description: Something does not do what the design docs say it should
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Report the **observed** behaviour, not the hoped-for one. Paste the command you ran and its
+        output verbatim — measured evidence is what makes a fix findable.
+  - type: textarea
+    id: symptom
+    attributes:
+      label: What happened
+      description: Command run + actual output, pasted verbatim.
+      placeholder: |
+        $ cd poly-agent && python -m pytest tests -q
+        no tests collected in 0.01s
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What the docs say should happen
+      description: Quote the section, e.g. "ENDGAME.md §4 — engine must not trade without risk_manager.approve()".
+      value: "→ ENDGAME.md §"
+    validations:
+      required: true
+  - type: dropdown
+    id: money
+    attributes:
+      label: Does this touch money, positions or orders?
+      options:
+        - "no — tooling/docs only"
+        - "yes — a monetary value is computed or stored"
+        - "yes — a position write"
+        - "yes — an order is sent to Polymarket"
+    validations:
+      required: true
+  - type: textarea
+    id: number-rule
+    attributes:
+      label: Number Rule status (only if money is involved)
+      description: Which of the three sources (intent / API receipt / persisted book) disagree, per DATA-SAFETY.md.
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      value: "Windows / Python 3.x / commit <sha>"
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Smallest reproduction
+      description: A failing test counts as the best answer here.

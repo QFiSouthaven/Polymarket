@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Read the design docs first
+    url: https://github.com/QFiSouthaven/Polymarket/blob/main/ENDGAME.md
+    about: Product intent, architecture and module contracts. If a doc conflicts with code, say which one you believe is wrong.
+  - name: Blockers & current position
+    url: https://github.com/QFiSouthaven/Polymarket/blob/main/Development/docs/ROADMAP.md
+    about: Check whether your issue already exists as blocker B-1 … B-7 before filing it.
